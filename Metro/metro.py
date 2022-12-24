@@ -17,6 +17,9 @@ class Station:
     def add_transfer(self, station):
         self.transfers.append(station)
 
+    def get_english_name(self):
+        return translit(self.get_full_name(), 'ru', reversed=True)
+
 
 class Line:
     def __init__(self, name, number, color, stations):
@@ -57,16 +60,25 @@ class Metro:
                     return station
         return None
 
-    def get_similar_station_names(self, name):
+    def get_similar_station_names(self, name, aliases):
         all_names = []
         for line in self.lines:
             for station in line.stations:
                 all_names.append(station.name.lower())
                 all_names.append(translit(station.name.lower(), 'ru', reversed=True))
 
+        for alias in aliases.keys():
+            all_names.append(alias.lower())
+
         similar_names = difflib.get_close_matches(name.lower(), list(set(all_names)))
 
         res_names = []
+
+        for similar_alias in similar_names:
+            for alias in aliases:
+                if similar_alias == alias.lower():
+                    res_names.append(alias)
+
         for similar_name in similar_names:
             for line in self.lines:
                 for station in line.stations:
@@ -97,15 +109,17 @@ class Metro:
         assert(departure_station in dist.keys())
 
         cur_station = departure_station
-        output = cur_station.line.name + ': ' + cur_station.name
+        output = '*' + cur_station.line.get_full_name() + '* : *' + cur_station.name + '*'
 
         last = cur_station
         while cur_station is not None:
             if last.line != cur_station.line:
-                output += ' ---> ' + last.name + '\n'
-                output += 'Transfer to ' + cur_station.line.get_full_name() + '\n'
-                output += cur_station.line.name + ': ' + cur_station.name
+                output += ' ---> *' + last.name + '*\n'
+                output += 'Transfer to *' + cur_station.get_full_name() + '*\n'
+                output += '*' + cur_station.line.name + '* : *' + cur_station.name + '*'
             last = cur_station
             cur_station = p[cur_station]
+
+        output += ' ---> *' + last.name + '*'
 
         return output
