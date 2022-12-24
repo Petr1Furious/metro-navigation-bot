@@ -1,0 +1,8 @@
+This is the bot to plot a route from one Moscow metro station to another.
+Use cases:
+/start or /help - show this menu;
+/plot - select the departure and destination stations and plot the route;
+/save - save station alias;
+/list - list saved station aliases;
+/remove - remove saved station alias;
+/cancel - cancel current query.

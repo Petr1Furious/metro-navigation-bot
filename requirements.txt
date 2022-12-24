@@ -1,0 +1,6 @@
+pyTelegramBotAPI
+cdifflib
+sqlalchemy
+psycopg2-binary
+aiohttp
+transliterate
